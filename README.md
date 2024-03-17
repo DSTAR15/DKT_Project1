@@ -39,5 +39,38 @@ It aims to classify spam and non-spam emails using TensorFlow in Python. It util
     - Prints the test loss and accuracy obtained by the model.
 
 It demonstrates how to build a basic neural network model using TensorFlow to classify spam and non-spam emails accurately. To further improve the model, you can experiment with different architectures, hyperparameters, and preprocessing techniques. Additionally, you can deploy the model to enhance email filtering and user experience.
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+data = pd.read_csv("C:/Users/dharm/Downloads/archive (4)/spam_ham_dataset.csv")
+
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(data['text'])  
+y = data['label_num'] 
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = Sequential([
+    Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+    Dropout(0.5),
+    Dense(64, activation='relu'),
+    Dropout(0.5),
+    Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+model.fit(X_train.toarray(), y_train, epochs=5, batch_size=32, validation_split=0.2)
+
+loss, accuracy = model.evaluate(X_test.toarray(), y_test)
+print("Test Loss:", loss)
+print("Test Accuracy:", accuracy)
 <img width="770" alt="image" src="https://github.com/DSTAR15/DKT_Project1/assets/128448451/f31ffc1a-15c2-404c-bcaa-e481b8ce82c3">
 
